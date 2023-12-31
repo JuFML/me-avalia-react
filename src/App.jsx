@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const App = () => {
   const [movies, setMovies] = useState([])
-
+  
   useEffect(() => {
     fetch("./src/a.json")
       .then(data => data.json())
@@ -13,12 +13,12 @@ const App = () => {
   }, [])
   return (
     <>
-      <Navbar/>
+      <Navbar movies={movies}/>
       <main className="main">
         <div className="box">
           <ul className="list list-movies">
             {movies.map(movie => (
-              <li>
+              <li key={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
                 <p>📅 {movie.Year}</p>
