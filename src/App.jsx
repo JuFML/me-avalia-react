@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
   const [searchedMovies, setSearchedMovies] = useState([])
+  const [clickedMovie, setClickedMovie] = useState([])
   
   useEffect(() => {
     fetch("./src/a.json")
@@ -33,6 +33,13 @@ const App = () => {
       return movie.Title.toLowerCase().includes(inputSearch)
     }))
   }
+
+  const handleMovieClick = (e) => {
+    const idMovieCicked = (e.currentTarget.id);
+    setClickedMovie(...movies.filter(movie => movie.imdbID === idMovieCicked))
+  }
+
+  const handleBackClick = () => setClickedMovie([])
   return (
     <>
       <section className="nav-bar">
@@ -47,7 +54,7 @@ const App = () => {
         <div className="box">
           <ul className="list list-movies">
             {searchedMovies.map(movie => (
-              <li key={movie.imdbID}>
+              <li key={movie.imdbID} onClick={handleMovieClick} id={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
                 <p>📅 {movie.Year}</p>
@@ -56,12 +63,34 @@ const App = () => {
           </ul>
         </div>
         <div className="box">
-          <div className="summary">
+          {clickedMovie.length === 0 && <div className="summary">
             <h2>filmes assistidos</h2>
             <div>
               <p>#️⃣ 0 filmes</p>
               <p>⏳ 0 minutos</p>
             </div>
+          </div>}
+          
+          {clickedMovie.length !== 0 &&<div className="details">
+            <header className="details-header">
+              <div className="btn-back" onClick={handleBackClick}>←</div>
+              <img src={clickedMovie.Poster} alt={clickedMovie.Title} />
+              <div className="details-overview">
+                <h2>{clickedMovie.Title}</h2>
+                <p>{clickedMovie.Released} • {clickedMovie.Runtime}</p>
+                <p>{clickedMovie.Genre}</p>
+                <p>⭐ {clickedMovie.imdbRating} IMDB rating</p>
+              </div>
+            </header>            
+            <section className="details-section">
+                <div className="rating"></div>
+                <p>{clickedMovie.Plot}</p>
+                <p>Elenco: {clickedMovie.Actors}</p>
+                <p>Direcao: {clickedMovie.Director}</p>
+            </section>
+          </div>}
+          
+          <div className="list list-watched">
           </div>
         </div>
       </main>
