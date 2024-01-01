@@ -3,30 +3,11 @@ import { useState, useEffect } from "react";
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
-  const [searchedMovies, setSearchedMovies] = useState([])
   const [clickedMovie, setClickedMovie] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
   const [rating, setRating] = useState("")
   const [minutesWatched, setMinutesWatched] = useState(0)
-  console.log(watchedMovies);
   
-  useEffect(() => {
-    fetch("./src/a.json")
-      .then(data => data.json())
-      .then(resp => {
-        setMovies(resp)
-        setSearchedMovies(resp)
-      })
-      .catch(console.log)
-  }, [])
-
-  useEffect(() => {
-    if(inputSearch === "") {
-      setSearchedMovies([...movies])
-    }
-  }, [inputSearch])
-  
-
   useEffect(() => {
     setMinutesWatched(watchedMovies.reduce((acc, film) => {
       return acc += Number(film.Runtime.replace(" min", ""))      
@@ -34,29 +15,46 @@ const App = () => {
   }, [watchedMovies])
  
 
-  const handleSearchChange = (e) => {
-    setInputSearch(e.target.value.toLowerCase())
-  }
+  const handleSearchChange = (e) => setInputSearch(e.target.value)
+  const handleBackClick = () => setClickedMovie([])
+  const handleRatingClick = () => setRating(form.rating.value)
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
-    setSearchedMovies(movies.filter(movie => {
-      return movie.Title.toLowerCase().includes(inputSearch)
-    }))
+
+    fetch(`https://www.omdbapi.com/?apikey=59985dee&s=${inputSearch}`)
+      .then(data => data.json())
+      .then(resp => {
+        setMovies(resp.Search)
+      })
+      .catch(console.log)
   }
 
   const handleMovieClick = (e) => {
     const idMovieCicked = (e.currentTarget.id);
-    setClickedMovie(...movies.filter(movie => movie.imdbID === idMovieCicked))
-  }
 
-  const handleBackClick = () => setClickedMovie([])
-  const handleRatingClick = (e) => setRating(form.rating.value)
+    fetch(`https://www.omdbapi.com/?apikey=59985dee&i=${idMovieCicked}`)
+      .then(data => data.json())
+      .then(resp => {
+        if(resp.Runtime === "N/A") {
+          setClickedMovie({...resp, Runtime: "0 min"})
+          return
+        }
+        setClickedMovie(resp)
+      })
+      .catch(console.log)
+  }
+  
   const handleAddFilm = (e) => {
     e.preventDefault()
     setWatchedMovies(prev => [...prev, {...clickedMovie, rate: rating}])
     setClickedMovie([])
     setRating("")
+  }
+
+  const handleDeleteClick = (e) => {
+    const filmIdToDelete = e.currentTarget.id
+    setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
   }
 
   return (
@@ -67,12 +65,12 @@ const App = () => {
           <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={handleSearchChange}/>
           <button className="btn-search">Buscar</button>
         </form>
-        <div className="num-results"><strong>{movies.length}</strong> Resultados</div>
+        <div className="num-results"><strong>{movies?.length || 0}</strong> Resultados</div>
       </section>
       <main className="main">
         <div className="box">
           <ul className="list list-movies">
-            {searchedMovies.map(movie => (
+            {movies?.map(movie => (
               <li key={movie.imdbID} onClick={handleMovieClick} id={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
@@ -82,16 +80,16 @@ const App = () => {
           </ul>
         </div>
         <div className="box">
-          {clickedMovie.length === 0 &&
+          {clickedMovie?.length === 0 &&
            <div className="summary">
             <h2>filmes assistidos</h2>
             <div>
-              <p>#️⃣ {watchedMovies.length} filmes</p>
+              <p>#️⃣ {watchedMovies?.length} {watchedMovies?.length === 1 ? "filme" : "filmes"}</p>
               <p>⏳ {minutesWatched} minutos</p>
             </div>
           </div>}          
           
-          {clickedMovie.length !== 0 &&  <div className="details">
+          {clickedMovie?.length !== 0 &&  <div className="details">
             <header className="details-header">
               <div className="btn-back" onClick={handleBackClick}>←</div>
               <img src={clickedMovie.Poster} alt={clickedMovie.Title} />
@@ -125,8 +123,8 @@ const App = () => {
           </div>}
           
           <ul className="list list-watched">
-            {clickedMovie.length === 0 && watchedMovies.map(movie => (
-              <li key={movie.imdbID} onClick={handleMovieClick} id={movie.imdbID}>
+            {clickedMovie?.length === 0 && watchedMovies.map(movie => (
+              <li key={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
                 <div>
@@ -134,8 +132,7 @@ const App = () => {
                   <p>🌟 {movie.rate}</p>
                   <p>⏳ {movie.Runtime}</p>
                 </div>
-                <div className="btn-delete">X</div>
-
+                <div className="btn-delete" id={movie.imdbID} onClick={handleDeleteClick}>X</div>
             </li>
             ))}
           </ul>
