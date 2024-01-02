@@ -59,14 +59,15 @@ const App = () => {
 
   return (
     <>
-      <section className="nav-bar">
+      <nav className="nav-bar">
         <img className="logo" src="/images/logo-me-avalia.png" alt="" />
         <form className="form-search" onSubmit={handleSearchSubmit}>
           <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={handleSearchChange}/>
           <button className="btn-search">Buscar</button>
         </form>
-        <div className="num-results"><strong>{movies?.length || 0}</strong> Resultados</div>
-      </section>
+        <p className="num-results"><strong>{movies?.length || 0}</strong> Resultados</p>
+      </nav>
+
       <main className="main">
         <div className="box">
           <ul className="list list-movies">
@@ -74,18 +75,28 @@ const App = () => {
               <li key={movie.imdbID} onClick={handleMovieClick} id={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
-                <p>📅 {movie.Year}</p>
+                <p>
+                  <span>📅</span>{" "}
+                  <span>{movie.Year}</span>
+                </p>
             </li>
             ))}
           </ul>
         </div>
+
         <div className="box">
           {clickedMovie?.length === 0 &&
            <div className="summary">
             <h2>filmes assistidos</h2>
             <div>
-              <p>#️⃣ {watchedMovies?.length} {watchedMovies?.length === 1 ? "filme" : "filmes"}</p>
-              <p>⏳ {minutesWatched} minutos</p>
+              <p>
+                <span>#️⃣</span>{" "}
+                <span>{watchedMovies?.length} {watchedMovies?.length === 1 ? "filme" : "filmes"}</span>
+              </p>
+              <p>
+                <span>⏳</span>{" "}
+                <span>{minutesWatched} minutos</span>
+              </p>
             </div>
           </div>}          
           
@@ -128,9 +139,18 @@ const App = () => {
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
                 <div>
-                  <p>⭐ {movie.imdbRating}</p>
-                  <p>🌟 {movie.rate}</p>
-                  <p>⏳ {movie.Runtime}</p>
+                  <p>
+                    <span>⭐</span>{" "}
+                    <span>{movie.imdbRating}</span>
+                  </p>
+                  <p>
+                    <span>🌟</span>{" "}
+                    <span>{movie.rate}</span>
+                  </p>
+                  <p>
+                    <span>⏳</span>
+                    <span>{movie.Runtime}</span>
+                  </p>
                 </div>
                 <div className="btn-delete" id={movie.imdbID} onClick={handleDeleteClick}>X</div>
             </li>
