@@ -7,7 +7,7 @@ const App = () => {
   const [watchedMovies, setWatchedMovies] = useState([])
   const [rating, setRating] = useState("")
   const [minutesWatched, setMinutesWatched] = useState(0)
-  
+    
   useEffect(() => {
     setMinutesWatched(watchedMovies.reduce((acc, film) => {
       return acc += Number(film.Runtime.replace(" min", ""))      
@@ -30,8 +30,13 @@ const App = () => {
       .catch(console.log)
   }
 
-  const handleMovieClick = (e) => {
-    const idMovieCicked = (e.currentTarget.id);
+  const handleMovieClick = (movie) => {
+    const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
+    if(isFilmOnList) {
+      return
+    }
+
+    const idMovieCicked = (movie.imdbID);
 
     fetch(`https://www.omdbapi.com/?apikey=59985dee&i=${idMovieCicked}`)
       .then(data => data.json())
@@ -72,7 +77,7 @@ const App = () => {
         <div className="box">
           <ul className="list list-movies">
             {movies?.map(movie => (
-              <li key={movie.imdbID} onClick={handleMovieClick} id={movie.imdbID}>
+              <li key={movie.imdbID} onClick={() => handleMovieClick(movie)} id={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
                 <p>
@@ -102,13 +107,13 @@ const App = () => {
           
           {clickedMovie?.length !== 0 &&  <div className="details">
             <header className="details-header">
-              <div className="btn-back" onClick={handleBackClick}>←</div>
+              <button className="btn-back" onClick={handleBackClick}>&larr;</button>
               <img src={clickedMovie.Poster} alt={clickedMovie.Title} />
               <div className="details-overview">
                 <h2>{clickedMovie.Title}</h2>
-                <p>{clickedMovie.Released} • {clickedMovie.Runtime}</p>
+                <p>{clickedMovie.Released} &bull; {clickedMovie.Runtime}</p>
                 <p>{clickedMovie.Genre}</p>
-                <p>⭐ {clickedMovie.imdbRating} IMDB rating</p>
+                <p><span>⭐</span> {clickedMovie.imdbRating} IMDB rating</p>
               </div>
             </header>            
             <section className="details-section">
