@@ -72,6 +72,34 @@ const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
           </ul>
 )
 
+const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating}) => (
+  <div className="details">
+    <header className="details-header">
+      <button className="btn-back" onClick={onButtonBackClick}>&larr;</button>
+      <img src={clickedMovie.Poster} alt={clickedMovie.Title} />
+      <div className="details-overview">
+        <h2>{clickedMovie.Title}</h2>
+        <p>{clickedMovie.Released} &bull; {clickedMovie.Runtime}</p>
+        <p>{clickedMovie.Genre}</p>
+        <p><span>⭐</span> {clickedMovie.imdbRating} IMDB rating</p>
+      </div>
+    </header>
+    <section className="details-section">
+        <form id="form" className="rating" onClick={onClickRating} onSubmit={onClickAddFilm}>
+          <div className="rating-radios">
+            {Array.from({length: 10}, (_, i) => (
+              <div key={i}><input type="radio" value={i + 1} name="rating" /><br/>{i + 1}</div>
+            ))}
+          </div>
+          {rating && <button className="btn-add">+ Adicionar à lista</button>}
+        </form>
+        <p>{clickedMovie.Plot}</p>
+        <p>Elenco: {clickedMovie.Actors}</p>
+        <p>Direcao: {clickedMovie.Director}</p>
+    </section>
+  </div>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -154,37 +182,15 @@ const App = () => {
 
       <main className="main">
         <ListBox>
-          <Movies movies={movies} onMovieClick={handleMovieClick}/>          
+          <Movies movies={movies} onMovieClick={handleMovieClick}/>
         </ListBox>
 
         <ListBox>
           {clickedMovie?.length === 0 && <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>}
 
-          {clickedMovie?.length !== 0 &&  <div className="details">
-            <header className="details-header">
-              <button className="btn-back" onClick={handleBackClick}>&larr;</button>
-              <img src={clickedMovie.Poster} alt={clickedMovie.Title} />
-              <div className="details-overview">
-                <h2>{clickedMovie.Title}</h2>
-                <p>{clickedMovie.Released} &bull; {clickedMovie.Runtime}</p>
-                <p>{clickedMovie.Genre}</p>
-                <p><span>⭐</span> {clickedMovie.imdbRating} IMDB rating</p>
-              </div>
-            </header>
-            <section className="details-section">
-                <form id="form" className="rating" onClick={handleRatingClick} onSubmit={handleAddFilm}>
-                  <div className="rating-radios">
-                    {Array.from({length: 10}, (_, i) => (
-                      <div key={i}><input type="radio" value={i + 1} name="rating" /><br/>{i + 1}</div>
-                    ))}
-                  </div>
-                  {rating && <button className="btn-add">+ Adicionar à lista</button>}
-                </form>
-                <p>{clickedMovie.Plot}</p>
-                <p>Elenco: {clickedMovie.Actors}</p>
-                <p>Direcao: {clickedMovie.Director}</p>
-            </section>
-          </div>}
+          {clickedMovie?.length !== 0 &&
+          <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
+          }
 
           {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
         </ListBox>
