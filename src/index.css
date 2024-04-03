@@ -24,6 +24,7 @@
     color: var(--color-text);
     background-color: var(--color-background-900);
     padding: 2.4rem;
+    overflow: hidden;
   }
   
   .nav-bar {
@@ -37,7 +38,7 @@
   
   .main {
     margin-top: 2.4rem;
-    height: calc(100vh - 7.2rem - 3 * 2.4rem);
+    height: calc(100vh - 7.2rem - 4 * 2.4rem);
     display: flex;
     gap: 2.4rem;
     justify-content: center;
@@ -329,7 +330,6 @@
     cursor: pointer;
     z-index: 999;
     display: flex;
-    align-items: center;
     justify-content: center;
   }
   
