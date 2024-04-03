@@ -46,6 +46,32 @@ const Movies = ({movies, onMovieClick}) => (
           </ul>
 )
 
+const WatchedMovies = ({clickedMovie, watchedMovies, onDeleteClick}) => (
+  <ul className="list list-watched">
+            {clickedMovie?.length === 0 && watchedMovies.map(movie => (
+              <li key={movie.imdbID}>
+                <img src={movie.Poster} alt="" />
+                <h3>{movie.Title}</h3>
+                <div>
+                  <p>
+                    <span>⭐</span>{" "}
+                    <span>{movie.imdbRating}</span>
+                  </p>
+                  <p>
+                    <span>🌟</span>{" "}
+                    <span>{movie.rate}</span>
+                  </p>
+                  <p>
+                    <span>⏳</span>
+                    <span>{movie.Runtime}</span>
+                  </p>
+                </div>
+                <div className="btn-delete" id={movie.imdbID} onClick={onDeleteClick}>X</div>
+            </li>
+            ))}
+          </ul>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -160,31 +186,7 @@ const App = () => {
             </section>
           </div>}
 
-          <ul className="list list-watched">
-            {clickedMovie?.length === 0 && watchedMovies.map(movie => (
-              <li key={movie.imdbID}>
-                <img src={movie.Poster} alt="" />
-                <h3>{movie.Title}</h3>
-                <div>
-                  <p>
-                    <span>⭐</span>{" "}
-                    <span>{movie.imdbRating}</span>
-                  </p>
-                  <p>
-                    <span>🌟</span>{" "}
-                    <span>{movie.rate}</span>
-                  </p>
-                  <p>
-                    <span>⏳</span>
-                    <span>{movie.Runtime}</span>
-                  </p>
-                </div>
-                <div className="btn-delete" id={movie.imdbID} onClick={handleDeleteClick}>X</div>
-            </li>
-            ))}
-          </ul>
-          <div className="list list-watched">
-          </div>
+          <WatchedMovies clickedMovie={clickedMovie} watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>          
         </ListBox>
       </main>
     </>
