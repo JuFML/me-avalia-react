@@ -15,6 +15,22 @@ const NavBar = ({movies, inputSearch, onSearchMovie, onChangeMovie}) => (
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 
+const Sumary = ({watchedMovies, minutesWatched}) => (
+  <div className="summary">
+            <h2>filmes assistidos</h2>
+            <div>
+              <p>
+                <span>#️⃣</span>{" "}
+                <span>{watchedMovies?.length} {watchedMovies?.length === 1 ? "filme" : "filmes"}</span>
+              </p>
+              <p>
+                <span>⏳</span>{" "}
+                <span>{minutesWatched} minutos</span>
+              </p>
+            </div>
+          </div>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -113,19 +129,8 @@ const App = () => {
 
         <ListBox>
           {clickedMovie?.length === 0 &&
-           <div className="summary">
-            <h2>filmes assistidos</h2>
-            <div>
-              <p>
-                <span>#️⃣</span>{" "}
-                <span>{watchedMovies?.length} {watchedMovies?.length === 1 ? "filme" : "filmes"}</span>
-              </p>
-              <p>
-                <span>⏳</span>{" "}
-                <span>{minutesWatched} minutos</span>
-              </p>
-            </div>
-          </div>}
+          <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>
+           }
 
           {clickedMovie?.length !== 0 &&  <div className="details">
             <header className="details-header">
