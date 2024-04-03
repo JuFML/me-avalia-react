@@ -31,6 +31,21 @@ const Sumary = ({watchedMovies, minutesWatched}) => (
           </div>
 )
 
+const Movies = ({movies, onMovieClick}) => (
+  <ul className="list list-movies">
+            {movies?.map(movie => (
+              <li key={movie.imdbID} onClick={() => onMovieClick(movie)} id={movie.imdbID}>
+                <img src={movie.Poster} alt="" />
+                <h3>{movie.Title}</h3>
+                <p>
+                  <span>📅</span>{" "}
+                  <span>{movie.Year}</span>
+                </p>
+            </li>
+            ))}
+          </ul>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -113,24 +128,11 @@ const App = () => {
 
       <main className="main">
         <ListBox>
-          <ul className="list list-movies">
-            {movies?.map(movie => (
-              <li key={movie.imdbID} onClick={() => handleMovieClick(movie)} id={movie.imdbID}>
-                <img src={movie.Poster} alt="" />
-                <h3>{movie.Title}</h3>
-                <p>
-                  <span>📅</span>{" "}
-                  <span>{movie.Year}</span>
-                </p>
-            </li>
-            ))}
-          </ul>
+          <Movies movies={movies} onMovieClick={handleMovieClick}/>          
         </ListBox>
 
         <ListBox>
-          {clickedMovie?.length === 0 &&
-          <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>
-           }
+          {clickedMovie?.length === 0 && <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>}
 
           {clickedMovie?.length !== 0 &&  <div className="details">
             <header className="details-header">
