@@ -2,6 +2,17 @@ import { useState, useEffect } from "react";
 
 const apiKey = import.meta.env.VITE_API_KEY
 
+const NavBar = ({movies, inputSearch, onSearchMovie, onChangeMovie}) => (
+  <nav className="nav-bar">
+        <img className="logo" src="/images/logo-me-avalia.png" alt="" />
+        <form className="form-search" onSubmit={onSearchMovie}>
+          <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={onChangeMovie}/>
+          <button className="btn-search">Buscar</button>
+        </form>
+        <p className="num-results"><strong>{movies?.length || 0}</strong> Resultados</p>
+      </nav>
+)
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -80,14 +91,7 @@ const App = () => {
 
   return (
     <>
-      <nav className="nav-bar">
-        <img className="logo" src="/images/logo-me-avalia.png" alt="" />
-        <form className="form-search" onSubmit={handleSearchSubmit}>
-          <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={handleSearchChange}/>
-          <button className="btn-search">Buscar</button>
-        </form>
-        <p className="num-results"><strong>{movies?.length || 0}</strong> Resultados</p>
-      </nav>
+    <NavBar movies={movies} inputSearch={inputSearch} onSearchMovie={handleSearchSubmit} onChangeMovie={handleSearchChange}/>
 
       <main className="main">
         <div className="box">
