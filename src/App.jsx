@@ -46,9 +46,9 @@ const Movies = ({movies, onMovieClick}) => (
           </ul>
 )
 
-const WatchedMovies = ({clickedMovie, watchedMovies, onDeleteClick}) => (
+const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
   <ul className="list list-watched">
-            {clickedMovie?.length === 0 && watchedMovies.map(movie => (
+            {watchedMovies.map(movie => (
               <li key={movie.imdbID}>
                 <img src={movie.Poster} alt="" />
                 <h3>{movie.Title}</h3>
@@ -186,7 +186,7 @@ const App = () => {
             </section>
           </div>}
 
-          <WatchedMovies clickedMovie={clickedMovie} watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>          
+          {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
         </ListBox>
       </main>
     </>
