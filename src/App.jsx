@@ -47,7 +47,8 @@ const App = () => {
 
   const handleMovieClick = (movie) => {
     const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
-    if(isFilmOnList) {
+    const isTheSameFilm = movie.imdbID == clickedMovie.imdbID
+    if(isFilmOnList || isTheSameFilm) {
       return
     }
 
