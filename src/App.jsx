@@ -13,6 +13,8 @@ const NavBar = ({movies, inputSearch, onSearchMovie, onChangeMovie}) => (
       </nav>
 )
 
+const ListBox = ({children}) => <div className="box">{children}</div>
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -94,7 +96,7 @@ const App = () => {
     <NavBar movies={movies} inputSearch={inputSearch} onSearchMovie={handleSearchSubmit} onChangeMovie={handleSearchChange}/>
 
       <main className="main">
-        <div className="box">
+        <ListBox>
           <ul className="list list-movies">
             {movies?.map(movie => (
               <li key={movie.imdbID} onClick={() => handleMovieClick(movie)} id={movie.imdbID}>
@@ -107,9 +109,9 @@ const App = () => {
             </li>
             ))}
           </ul>
-        </div>
+        </ListBox>
 
-        <div className="box">
+        <ListBox>
           {clickedMovie?.length === 0 &&
            <div className="summary">
             <h2>filmes assistidos</h2>
@@ -176,7 +178,7 @@ const App = () => {
           </ul>
           <div className="list list-watched">
           </div>
-        </div>
+        </ListBox>
       </main>
     </>
   )
