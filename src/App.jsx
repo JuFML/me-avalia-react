@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+const apiKey = import.meta.env.VITE_API_KEY
+
 const App = () => {
   const [movies, setMovies] = useState([])
   const [inputSearch, setInputSearch] = useState("")
@@ -7,13 +9,22 @@ const App = () => {
   const [watchedMovies, setWatchedMovies] = useState([])
   const [rating, setRating] = useState("")
   const [minutesWatched, setMinutesWatched] = useState(0)
-    
+
+  useEffect(() => {
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=lake`)
+    .then(data => data.json())
+    .then(resp => {
+      setMovies(resp.Search)
+    })
+    .catch(console.log)
+  }, [])
+
   useEffect(() => {
     setMinutesWatched(watchedMovies.reduce((acc, film) => {
-      return acc += Number(film.Runtime.replace(" min", ""))      
+      return acc += Number(film.Runtime.replace(" min", ""))
     }, 0))
   }, [watchedMovies])
- 
+
 
   const handleSearchChange = (e) => setInputSearch(e.target.value)
   const handleBackClick = () => setClickedMovie([])
@@ -22,7 +33,11 @@ const App = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault()
 
-    fetch(`https://www.omdbapi.com/?apikey=59985dee&s=${inputSearch}`)
+    if(inputSearch.length < 2) {
+      return
+    }
+
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${inputSearch}`)
       .then(data => data.json())
       .then(resp => {
         setMovies(resp.Search)
@@ -38,7 +53,7 @@ const App = () => {
 
     const idMovieCicked = (movie.imdbID);
 
-    fetch(`https://www.omdbapi.com/?apikey=59985dee&i=${idMovieCicked}`)
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${idMovieCicked}`)
       .then(data => data.json())
       .then(resp => {
         if(resp.Runtime === "N/A") {
@@ -49,7 +64,7 @@ const App = () => {
       })
       .catch(console.log)
   }
-  
+
   const handleAddFilm = (e) => {
     e.preventDefault()
     setWatchedMovies(prev => [...prev, {...clickedMovie, rate: rating}])
@@ -103,8 +118,8 @@ const App = () => {
                 <span>{minutesWatched} minutos</span>
               </p>
             </div>
-          </div>}          
-          
+          </div>}
+
           {clickedMovie?.length !== 0 &&  <div className="details">
             <header className="details-header">
               <button className="btn-back" onClick={handleBackClick}>&larr;</button>
@@ -115,29 +130,22 @@ const App = () => {
                 <p>{clickedMovie.Genre}</p>
                 <p><span>⭐</span> {clickedMovie.imdbRating} IMDB rating</p>
               </div>
-            </header>            
+            </header>
             <section className="details-section">
                 <form id="form" className="rating" onClick={handleRatingClick} onSubmit={handleAddFilm}>
                   <div className="rating-radios">
-                    <div><input type="radio" value="1" name="rating" /><br/>1</div>
-                    <div><input type="radio" value="2" name="rating" /><br/>2</div>
-                    <div><input type="radio" value="3" name="rating" /><br/>3</div>
-                    <div><input type="radio" value="4" name="rating" /><br/>4</div>
-                    <div><input type="radio" value="5" name="rating" /><br/>5</div>
-                    <div><input type="radio" value="6" name="rating" /><br/>6</div>
-                    <div><input type="radio" value="7" name="rating" /><br/>7</div>
-                    <div><input type="radio" value="8" name="rating" /><br/>8</div>
-                    <div><input type="radio" value="9" name="rating" /><br/>9</div>
-                    <div><input type="radio" value="10" name="rating" /><br/>10</div>
+                    {Array.from({length: 10}, (_, i) => (
+                      <div key={i}><input type="radio" value={i + 1} name="rating" /><br/>{i + 1}</div>
+                    ))}
                   </div>
-                  {rating && <button className="btn-add">+ Adicionar `a lista</button>}
+                  {rating && <button className="btn-add">+ Adicionar à lista</button>}
                 </form>
                 <p>{clickedMovie.Plot}</p>
                 <p>Elenco: {clickedMovie.Actors}</p>
                 <p>Direcao: {clickedMovie.Director}</p>
             </section>
           </div>}
-          
+
           <ul className="list list-watched">
             {clickedMovie?.length === 0 && watchedMovies.map(movie => (
               <li key={movie.imdbID}>
@@ -161,7 +169,6 @@ const App = () => {
             </li>
             ))}
           </ul>
-          
           <div className="list list-watched">
           </div>
         </div>
