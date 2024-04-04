@@ -155,7 +155,7 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
     setRating("")
   }
 
-  return {clickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating}
+  return {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating}
 }
 
 const useWatchedMovie = () => {
@@ -178,7 +178,11 @@ const useWatchedMovie = () => {
 
 const Main = ({movies}) => {
   const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
-  const {clickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating} = useClickedMovie(watchedMovies, setWatchedMovies)
+  const {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating} = useClickedMovie(watchedMovies, setWatchedMovies)
+
+  useEffect(() => {
+    setClickedMovie([])
+  }, [movies])
 
   return (
     <main className="main">
