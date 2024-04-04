@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 const apiKey = import.meta.env.VITE_API_KEY
 
+const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
+
 const NavBar = ({movies, setMovies}) => {
   const [inputSearch, setInputSearch] = useState("")
 
@@ -51,7 +53,7 @@ const Sumary = ({watchedMovies, minutesWatched}) => (
           </div>
 )
 
-const Movies = ({getMoviePoster, movies, onMovieClick}) => (
+const Movies = ({movies, onMovieClick}) => (
   <ul className="list list-movies">
             {movies?.map(movie => (
               <li key={movie.imdbID} onClick={() => onMovieClick(movie)} id={movie.imdbID}>
@@ -66,7 +68,7 @@ const Movies = ({getMoviePoster, movies, onMovieClick}) => (
           </ul>
 )
 
-const WatchedMovies = ({getMoviePoster, watchedMovies, onDeleteClick}) => (
+const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
   <ul className="list list-watched">
             {watchedMovies.map(movie => (
               <li key={movie.imdbID}>
@@ -92,7 +94,7 @@ const WatchedMovies = ({getMoviePoster, watchedMovies, onDeleteClick}) => (
           </ul>
 )
 
-const MovieDetails = ({ getMoviePoster, onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating}) => (
+const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating}) => (
   <div className="details">
     <header className="details-header">
       <button className="btn-back" onClick={onButtonBackClick}>&larr;</button>
@@ -168,22 +170,20 @@ const Main = ({movies}) => {
     setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
   }
 
-  const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
-
   return (
     <main className="main">
         <ListBox>
-          <Movies getMoviePoster={getMoviePoster} movies={movies} onMovieClick={handleMovieClick}/>
+          <Movies movies={movies} onMovieClick={handleMovieClick}/>
         </ListBox>
 
         <ListBox>
           {clickedMovie?.length === 0 && <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>}
 
           {clickedMovie?.length !== 0 &&
-          <MovieDetails getMoviePoster={getMoviePoster} onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
+          <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
           }
 
-          {clickedMovie?.length === 0 && <WatchedMovies getMoviePoster={getMoviePoster} watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
+          {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
         </ListBox>
       </main>
   )
