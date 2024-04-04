@@ -21,7 +21,7 @@ const NavBar = ({movies, setMovies}) => {
       .then(resp => {
         setMovies(resp.Search)
       })
-      .catch(console.log)
+      .catch(error => alert(error.message))
   }
 
   return (
@@ -146,7 +146,7 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
         }
         setClickedMovie(resp)
       })
-      .catch(console.log)
+      .catch(error => alert(error.message))
   }
   const handleAddFilm = (e) => {
     e.preventDefault()
@@ -212,7 +212,7 @@ const App = () => {
     .then(resp => {
       setMovies(resp.Search)
     })
-    .catch(console.log)
+    .catch(error => alert(error.message))
   }, [])
 
   return (
