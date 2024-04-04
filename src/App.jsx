@@ -31,11 +31,11 @@ const Sumary = ({watchedMovies, minutesWatched}) => (
           </div>
 )
 
-const Movies = ({movies, onMovieClick}) => (
+const Movies = ({getMoviePoster, movies, onMovieClick}) => (
   <ul className="list list-movies">
             {movies?.map(movie => (
               <li key={movie.imdbID} onClick={() => onMovieClick(movie)} id={movie.imdbID}>
-                <img src={movie.Poster} alt="" />
+                <img src={getMoviePoster(movie.Poster)} alt="" />
                 <h3>{movie.Title}</h3>
                 <p>
                   <span>📅</span>{" "}
@@ -46,11 +46,11 @@ const Movies = ({movies, onMovieClick}) => (
           </ul>
 )
 
-const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
+const WatchedMovies = ({getMoviePoster, watchedMovies, onDeleteClick}) => (
   <ul className="list list-watched">
             {watchedMovies.map(movie => (
               <li key={movie.imdbID}>
-                <img src={movie.Poster} alt="" />
+                <img src={getMoviePoster(movie.Poster)} alt="" />
                 <h3>{movie.Title}</h3>
                 <div>
                   <p>
@@ -72,11 +72,11 @@ const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
           </ul>
 )
 
-const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating}) => (
+const MovieDetails = ({ getMoviePoster, onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating}) => (
   <div className="details">
     <header className="details-header">
       <button className="btn-back" onClick={onButtonBackClick}>&larr;</button>
-      <img src={clickedMovie.Poster} alt={clickedMovie.Title} />
+      <img src={getMoviePoster(clickedMovie.Poster)} alt={clickedMovie.Title} />
       <div className="details-overview">
         <h2>{clickedMovie.Title}</h2>
         <p>{clickedMovie.Released} &bull; {clickedMovie.Runtime}</p>
@@ -176,23 +176,25 @@ const App = () => {
     setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
   }
 
+  const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
+
   return (
     <>
     <NavBar movies={movies} inputSearch={inputSearch} onSearchMovie={handleSearchSubmit} onChangeMovie={handleSearchChange}/>
 
       <main className="main">
         <ListBox>
-          <Movies movies={movies} onMovieClick={handleMovieClick}/>
+          <Movies getMoviePoster={getMoviePoster} movies={movies} onMovieClick={handleMovieClick}/>
         </ListBox>
 
         <ListBox>
           {clickedMovie?.length === 0 && <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>}
 
           {clickedMovie?.length !== 0 &&
-          <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
+          <MovieDetails getMoviePoster={getMoviePoster} onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
           }
 
-          {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
+          {clickedMovie?.length === 0 && <WatchedMovies getMoviePoster={getMoviePoster} watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
         </ListBox>
       </main>
     </>
