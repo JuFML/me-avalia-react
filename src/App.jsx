@@ -2,16 +2,36 @@ import { useState, useEffect } from "react";
 
 const apiKey = import.meta.env.VITE_API_KEY
 
-const NavBar = ({movies, inputSearch, onSearchMovie, onChangeMovie}) => (
+const NavBar = ({movies, setMovies}) => {
+  const [inputSearch, setInputSearch] = useState("")
+
+  const handleSearchChange = (e) => setInputSearch(e.target.value)
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+
+    if(inputSearch.length < 2) {
+      return
+    }
+
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${inputSearch}`)
+      .then(data => data.json())
+      .then(resp => {
+        setMovies(resp.Search)
+      })
+      .catch(console.log)
+  }
+
+  return (
   <nav className="nav-bar">
         <img className="logo" src="/images/logo-me-avalia.png" alt="" />
-        <form className="form-search" onSubmit={onSearchMovie}>
-          <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={onChangeMovie}/>
+        <form className="form-search" onSubmit={handleSearchSubmit}>
+          <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={handleSearchChange}/>
           <button className="btn-search">Buscar</button>
         </form>
         <p className="num-results"><strong>{movies?.length || 0}</strong> Resultados</p>
       </nav>
-)
+)}
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 
@@ -100,48 +120,20 @@ const MovieDetails = ({ getMoviePoster, onButtonBackClick, clickedMovie, onClick
   </div>
 )
 
-const App = () => {
-  const [movies, setMovies] = useState([])
-  const [inputSearch, setInputSearch] = useState("")
+const Main = ({movies}) => {
   const [clickedMovie, setClickedMovie] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
   const [rating, setRating] = useState("")
   const [minutesWatched, setMinutesWatched] = useState(0)
 
   useEffect(() => {
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=lake`)
-    .then(data => data.json())
-    .then(resp => {
-      setMovies(resp.Search)
-    })
-    .catch(console.log)
-  }, [])
-
-  useEffect(() => {
     setMinutesWatched(watchedMovies.reduce((acc, film) => {
       return acc += Number(film.Runtime.replace(" min", ""))
     }, 0))
   }, [watchedMovies])
-
-
-  const handleSearchChange = (e) => setInputSearch(e.target.value)
+  
   const handleBackClick = () => setClickedMovie([])
   const handleRatingClick = () => setRating(form.rating.value)
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault()
-
-    if(inputSearch.length < 2) {
-      return
-    }
-
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${inputSearch}`)
-      .then(data => data.json())
-      .then(resp => {
-        setMovies(resp.Search)
-      })
-      .catch(console.log)
-  }
 
   const handleMovieClick = (movie) => {
     const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
@@ -150,9 +142,9 @@ const App = () => {
       return
     }
 
-    const idMovieCicked = (movie.imdbID);
+    const idMovieClicked = (movie.imdbID);
 
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${idMovieCicked}`)
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${idMovieClicked}`)
       .then(data => data.json())
       .then(resp => {
         if(resp.Runtime === "N/A") {
@@ -179,10 +171,7 @@ const App = () => {
   const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
 
   return (
-    <>
-    <NavBar movies={movies} inputSearch={inputSearch} onSearchMovie={handleSearchSubmit} onChangeMovie={handleSearchChange}/>
-
-      <main className="main">
+    <main className="main">
         <ListBox>
           <Movies getMoviePoster={getMoviePoster} movies={movies} onMovieClick={handleMovieClick}/>
         </ListBox>
@@ -197,6 +186,25 @@ const App = () => {
           {clickedMovie?.length === 0 && <WatchedMovies getMoviePoster={getMoviePoster} watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
         </ListBox>
       </main>
+  )
+}
+
+const App = () => {
+  const [movies, setMovies] = useState([])
+
+  useEffect(() => {
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=lake`)
+    .then(data => data.json())
+    .then(resp => {
+      setMovies(resp.Search)
+    })
+    .catch(console.log)
+  }, [])
+
+  return (
+    <>
+      <NavBar movies={movies} setMovies={setMovies}/>
+      <Main movies={movies}/>
     </>
   )
 };
