@@ -122,21 +122,12 @@ const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAd
   </div>
 )
 
-const Main = ({movies}) => {
+const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const [clickedMovie, setClickedMovie] = useState([])
-  const [watchedMovies, setWatchedMovies] = useState([])
   const [rating, setRating] = useState("")
-  const [minutesWatched, setMinutesWatched] = useState(0)
 
-  useEffect(() => {
-    setMinutesWatched(watchedMovies.reduce((acc, film) => {
-      return acc += Number(film.Runtime.replace(" min", ""))
-    }, 0))
-  }, [watchedMovies])
-  
   const handleBackClick = () => setClickedMovie([])
   const handleRatingClick = () => setRating(form.rating.value)
-
   const handleMovieClick = (movie) => {
     const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
     const isTheSameFilm = movie.imdbID == clickedMovie.imdbID
@@ -157,7 +148,6 @@ const Main = ({movies}) => {
       })
       .catch(console.log)
   }
-
   const handleAddFilm = (e) => {
     e.preventDefault()
     setWatchedMovies(prev => [...prev, {...clickedMovie, rate: rating}])
@@ -165,10 +155,30 @@ const Main = ({movies}) => {
     setRating("")
   }
 
+  return {clickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating}
+}
+
+const useWatchedMovie = () => {
+  const [watchedMovies, setWatchedMovies] = useState([])
+  const [minutesWatched, setMinutesWatched] = useState(0)
+
+  useEffect(() => {
+    setMinutesWatched(watchedMovies.reduce((acc, film) => {
+      return acc += Number(film.Runtime.replace(" min", ""))
+    }, 0))
+  }, [watchedMovies])
+
   const handleDeleteClick = (e) => {
     const filmIdToDelete = e.currentTarget.id
     setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
   }
+
+  return {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick}
+}
+
+const Main = ({movies}) => {
+  const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
+  const {clickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating} = useClickedMovie(watchedMovies, setWatchedMovies)
 
   return (
     <main className="main">
@@ -183,7 +193,7 @@ const Main = ({movies}) => {
           <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
           }
 
-          {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}          
+          {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}
         </ListBox>
       </main>
   )
