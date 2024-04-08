@@ -1,10 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const apiKey = import.meta.env.VITE_API_KEY
 
 const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
 
 const NavBar = ({movies, setMovies}) => {
+  const formRef = useRef(null)
+
+  useEffect(() => {
+    if(formRef.current.inputFilm.value.length > 0) {
+      formRef.current.reset()
+    }
+  }, [movies])
+
   const handleSearchSubmit = (e) => {
     e.preventDefault()    
     const {inputFilm} = e.target.elements
@@ -24,7 +32,7 @@ const NavBar = ({movies, setMovies}) => {
   return (
   <nav className="nav-bar">
         <img className="logo" src="/images/logo-me-avalia.png" alt="" />
-        <form className="form-search" onSubmit={handleSearchSubmit}>
+        <form ref={formRef} className="form-search" onSubmit={handleSearchSubmit}>
           <input name="inputFilm" className="search" type="text" placeholder="Buscar filmes..." />
           <button className="btn-search">Buscar</button>
         </form>
