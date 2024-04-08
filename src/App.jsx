@@ -5,18 +5,15 @@ const apiKey = import.meta.env.VITE_API_KEY
 const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
 
 const NavBar = ({movies, setMovies}) => {
-  const [inputSearch, setInputSearch] = useState("")
-
-  const handleSearchChange = (e) => setInputSearch(e.target.value)
-
   const handleSearchSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault()    
+    const {inputFilm} = e.target.elements
 
-    if(inputSearch.length < 2) {
+    if(inputFilm.value.length < 2) {
       return
     }
 
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${inputSearch}`)
+    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${inputFilm.value}`)
       .then(data => data.json())
       .then(resp => {
         setMovies(resp.Search)
@@ -28,7 +25,7 @@ const NavBar = ({movies, setMovies}) => {
   <nav className="nav-bar">
         <img className="logo" src="/images/logo-me-avalia.png" alt="" />
         <form className="form-search" onSubmit={handleSearchSubmit}>
-          <input value={inputSearch} className="search" type="text" placeholder="Buscar filmes..." onChange={handleSearchChange}/>
+          <input name="inputFilm" className="search" type="text" placeholder="Buscar filmes..." />
           <button className="btn-search">Buscar</button>
         </form>
         <p className="num-results"><strong>{movies?.length || 0}</strong> Resultados</p>
