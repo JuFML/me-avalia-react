@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import localForage from "localforage"
 
 const apiKey = import.meta.env.VITE_API_KEY
 
@@ -188,6 +189,17 @@ const Main = ({movies}) => {
   useEffect(() => {
     setClickedMovie([])
   }, [movies])
+
+  useEffect(() => {
+    localForage.setItem("watchedMovies", watchedMovies)
+      .catch(error => alert(error.message))
+  }, [watchedMovies])
+
+  useEffect(() => {
+    localForage.getItem("watchedMovies")
+      .then(movies => movies && setWatchedMovies(movies))
+      .catch(error => alert(error.message))
+  }, [])
 
   return (
     <main className="main">
