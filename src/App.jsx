@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import localForage from "localforage"
+import { Sumary } from "./components/Sumary";
 
 const apiKey = import.meta.env.VITE_API_KEY
 
@@ -43,21 +44,7 @@ const NavBar = ({movies, setMovies}) => {
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 
-const Sumary = ({watchedMovies, minutesWatched}) => (
-  <div className="summary">
-            <h2>filmes assistidos</h2>
-            <div>
-              <p>
-                <span>#️⃣</span>{" "}
-                <span>{watchedMovies?.length} {watchedMovies?.length === 1 ? "filme" : "filmes"}</span>
-              </p>
-              <p>
-                <span>⏳</span>{" "}
-                <span>{minutesWatched} minutos</span>
-              </p>
-            </div>
-          </div>
-)
+
 
 const Movies = ({movies, onMovieClick}) => (
   <ul className="list list-movies">
