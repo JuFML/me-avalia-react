@@ -100,7 +100,7 @@ const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
           </ul>
 )
 
-const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating}) => (
+const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating, onMouseEnter, onMouseLeave, tempRating}) => (
   <div className="details">
     <header className="details-header">
       <button className="btn-back" onClick={onButtonBackClick}>&larr;</button>
@@ -116,10 +116,9 @@ const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAd
         <form id="form" className="rating"  onSubmit={onClickAddFilm}>
           <div className="rating-container">
             {Array.from({length: 5}, (_, i) => (
-              i < rating ? 
-              (<div key={i} onClick={() => onClickRating(i + 1)}><img className="rating-star" src="images/star-filled.svg" alt="star"/></div>) : 
-              (<div key={i} onClick={() => onClickRating(i + 1)}><img className="rating-star" src="images/star-empty.svg" alt="star"/></div>)
-              // <div key={i}><input type="radio" value={i + 1} name="rating" /><br/>{i + 1}</div>
+              <div key={i} onClick={() => onClickRating(i + 1)} onMouseOver={() => onMouseEnter(i + 1)} onMouseOut={() => onMouseLeave("Saiu")}>
+                {i < tempRating || i < rating ? <img className="rating-star" src="images/star-filled.svg" alt="star"/> : <img className="rating-star" src="images/star-empty.svg" alt="star"/>}
+              </div>
             ))}
           </div>
           {rating && <button className="btn-add">+ Adicionar à lista</button>}
@@ -134,6 +133,7 @@ const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAd
 const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const [clickedMovie, setClickedMovie] = useState([])
   const [rating, setRating] = useState("")
+  const [tempRating, setTempRating] = useState("")
 
   const handleBackClick = () => {
     setClickedMovie([])
@@ -166,8 +166,10 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
     setClickedMovie([])
     setRating("")
   }
+  const handleMouseEnter = (rating) => {setTempRating(rating)}
+  const handleMouseLeave = () => {setTempRating("")}
 
-  return {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating}
+  return {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating}
 }
 
 const useWatchedMovie = () => {
@@ -190,7 +192,7 @@ const useWatchedMovie = () => {
 
 const Main = ({movies}) => {
   const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
-  const {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating} = useClickedMovie(watchedMovies, setWatchedMovies)
+  const {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating} = useClickedMovie(watchedMovies, setWatchedMovies)
 
   useEffect(() => {
     setClickedMovie([])
@@ -217,7 +219,7 @@ const Main = ({movies}) => {
           {clickedMovie?.length === 0 && <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>}
 
           {clickedMovie?.length !== 0 &&
-          <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating}/>
+          <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} tempRating={tempRating}/>
           }
 
           {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}
