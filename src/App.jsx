@@ -87,7 +87,7 @@ const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
                   </p>
                   <p>
                     <span>🌟</span>{" "}
-                    <span>{movie.rate}</span>
+                    <span>{movie.rate || 0}</span>
                   </p>
                   <p>
                     <span>⏳</span>
@@ -98,6 +98,12 @@ const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
             </li>
             ))}
           </ul>
+)
+
+const Star = ({tempRating, rating, i, onClickRating, onMouseEnter, onMouseLeave}) => (
+  <div onClick={() => onClickRating(i + 1)} onMouseOver={() => onMouseEnter(i + 1)} onMouseOut={() => onMouseLeave()}>
+    {i < tempRating || i < rating ? <img className="rating-star" src="images/star-filled.svg" alt="star"/> : <img className="rating-star" src="images/star-empty.svg" alt="star"/>}
+  </div>
 )
 
 const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating, onMouseEnter, onMouseLeave, tempRating}) => (
@@ -113,16 +119,13 @@ const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAd
       </div>
     </header>
     <section className="details-section">
-        <form id="form" className="rating"  onSubmit={onClickAddFilm}>
+        {/* <form id="form" className="rating"  onSubmit={onClickAddFilm}> */}
           <div className="rating-container">
-            {Array.from({length: 5}, (_, i) => (
-              <div key={i} onClick={() => onClickRating(i + 1)} onMouseOver={() => onMouseEnter(i + 1)} onMouseOut={() => onMouseLeave("Saiu")}>
-                {i < tempRating || i < rating ? <img className="rating-star" src="images/star-filled.svg" alt="star"/> : <img className="rating-star" src="images/star-empty.svg" alt="star"/>}
-              </div>
+            {Array.from({length: 10}, (_, i) => (
+              <Star key={i} tempRating={tempRating} rating={rating} i={i} onClickRating={onClickRating} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}/>
             ))}
           </div>
-          {rating && <button className="btn-add">+ Adicionar à lista</button>}
-        </form>
+          <button className="btn-add" onClick={onClickAddFilm}>+ Adicionar à lista</button>
         <p>{clickedMovie.Plot}</p>
         <p>Elenco: {clickedMovie.Actors}</p>
         <p>Direcao: {clickedMovie.Director}</p>
@@ -160,8 +163,7 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
       })
       .catch(error => alert(error.message))
   }
-  const handleAddFilm = (e) => {
-    e.preventDefault()
+  const handleAddFilm = () => {
     setWatchedMovies(prev => [...prev, {...clickedMovie, rate: rating}])
     setClickedMovie([])
     setRating("")
