@@ -113,10 +113,13 @@ const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAd
       </div>
     </header>
     <section className="details-section">
-        <form id="form" className="rating" onClick={onClickRating} onSubmit={onClickAddFilm}>
-          <div className="rating-radios">
-            {Array.from({length: 10}, (_, i) => (
-              <div key={i}><input type="radio" value={i + 1} name="rating" /><br/>{i + 1}</div>
+        <form id="form" className="rating"  onSubmit={onClickAddFilm}>
+          <div className="rating-container">
+            {Array.from({length: 5}, (_, i) => (
+              i < rating ? 
+              (<div key={i} onClick={() => onClickRating(i + 1)}><img className="rating-star" src="images/star-filled.svg" alt="star"/></div>) : 
+              (<div key={i} onClick={() => onClickRating(i + 1)}><img className="rating-star" src="images/star-empty.svg" alt="star"/></div>)
+              // <div key={i}><input type="radio" value={i + 1} name="rating" /><br/>{i + 1}</div>
             ))}
           </div>
           {rating && <button className="btn-add">+ Adicionar à lista</button>}
@@ -132,8 +135,11 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const [clickedMovie, setClickedMovie] = useState([])
   const [rating, setRating] = useState("")
 
-  const handleBackClick = () => setClickedMovie([])
-  const handleRatingClick = () => setRating(form.rating.value)
+  const handleBackClick = () => {
+    setClickedMovie([])
+    setRating()
+  }
+  const handleRatingClick = (rating) => setRating(rating)
   const handleMovieClick = (movie) => {
     const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
     const isTheSameFilm = movie.imdbID == clickedMovie.imdbID

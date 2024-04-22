@@ -246,7 +246,7 @@
     gap: 1.6rem;
   }
   
-  .details img {
+  .details-header img {
     width: 33%;
   }
   
@@ -282,9 +282,14 @@
     gap: 2.4rem;
   }
 
-  .rating-radios {
+  .rating-container {
     display: flex;
     gap: 1.8rem;
+  }
+
+  .rating-star {
+    height: 40px;
+    width: 40px;
   }
   
   .btn-add {
