@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react"
-
-const apiKey = import.meta.env.VITE_API_KEY
+import { apiKey } from "../utils/apiKey"
 
 const NavBar = ({movies, setMovies}) => {
   const formRef = useRef(null)

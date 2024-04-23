@@ -2,29 +2,14 @@ import { useState, useEffect } from "react";
 import localForage from "localforage"
 import { Sumary } from "./components/Sumary";
 import { NavBar } from "./components/NavBar";
-
-const getMoviePoster = (poster) => poster === "N/A" ? "images/404-img.jpg" : poster
-
-const apiKey = import.meta.env.VITE_API_KEY
+import { useWatchedMovie } from "./hooks/useWatchedMovies";
+import { Movies } from "./components/Movies";
+import { getMoviePoster } from "./utils/getMoviePoster";
+import { apiKey } from "./utils/apiKey"
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 
 
-
-const Movies = ({movies, onMovieClick}) => (
-  <ul className="list list-movies">
-            {movies?.map(movie => (
-              <li key={movie.imdbID} onClick={() => onMovieClick(movie)} id={movie.imdbID}>
-                <img src={getMoviePoster(movie.Poster)} alt="" />
-                <h3>{movie.Title}</h3>
-                <p>
-                  <span>📅</span>{" "}
-                  <span>{movie.Year}</span>
-                </p>
-            </li>
-            ))}
-          </ul>
-)
 
 const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
   <ul className="list list-watched">
@@ -124,24 +109,6 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const handleMouseLeave = () => {setTempRating("")}
 
   return {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating}
-}
-
-const useWatchedMovie = () => {
-  const [watchedMovies, setWatchedMovies] = useState([])
-  const [minutesWatched, setMinutesWatched] = useState(0)
-
-  useEffect(() => {
-    setMinutesWatched(watchedMovies.reduce((acc, film) => {
-      return acc += Number(film.Runtime.replace(" min", ""))
-    }, 0))
-  }, [watchedMovies])
-
-  const handleDeleteClick = (e) => {
-    const filmIdToDelete = e.currentTarget.id
-    setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
-  }
-
-  return {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick}
 }
 
 const Main = ({movies}) => {
