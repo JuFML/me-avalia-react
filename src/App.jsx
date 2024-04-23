@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import localForage from "localforage"
 import { Sumary } from "./components/Sumary";
 import { NavBar } from "./components/NavBar";
-import { useWatchedMovie } from "./hooks/useWatchedMovies";
 import { Movies } from "./components/Movies";
+import { WatchedMovies } from "./components/WatchedMovies";
+import { useWatchedMovie } from "./hooks/useWatchedMovies";
 import { getMoviePoster } from "./utils/getMoviePoster";
 import { apiKey } from "./utils/apiKey"
 
@@ -11,31 +12,7 @@ const ListBox = ({children}) => <div className="box">{children}</div>
 
 
 
-const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
-  <ul className="list list-watched">
-            {watchedMovies.map(movie => (
-              <li key={movie.imdbID}>
-                <img src={getMoviePoster(movie.Poster)} alt="" />
-                <h3>{movie.Title}</h3>
-                <div>
-                  <p>
-                    <span>⭐</span>{" "}
-                    <span>{movie.imdbRating}</span>
-                  </p>
-                  <p>
-                    <span>🌟</span>{" "}
-                    <span>{movie.rate || 0}</span>
-                  </p>
-                  <p>
-                    <span>⏳</span>
-                    <span>{movie.Runtime}</span>
-                  </p>
-                </div>
-                <div className="btn-delete" id={movie.imdbID} onClick={onDeleteClick}>X</div>
-            </li>
-            ))}
-          </ul>
-)
+
 
 const Star = ({tempRating, rating, i, onClickRating, onMouseEnter, onMouseLeave}) => (
   <div onClick={() => onClickRating(i + 1)} onMouseOver={() => onMouseEnter(i + 1)} onMouseOut={() => onMouseLeave()}>
