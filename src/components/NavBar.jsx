@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { apiKey } from "../utils/apiKey"
+import { apiKey } from "@/utils/apiKey"
 
 const NavBar = ({movies, setMovies}) => {
   const formRef = useRef(null)

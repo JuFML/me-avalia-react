@@ -1,5 +1,5 @@
-import { Star } from "./Star"
-import { getMoviePoster } from "../utils/getMoviePoster";
+import { Star } from "@/components/Star"
+import { getMoviePoster } from "@/utils/getMoviePoster";
 
 const MovieDetails = ({onButtonBackClick, clickedMovie, onClickRating, onClickAddFilm, rating, onMouseEnter, onMouseLeave, tempRating}) => (
   <div className="details">

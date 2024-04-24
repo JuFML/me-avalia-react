@@ -1,11 +1,11 @@
 import { useEffect } from "react"
-import { useClickedMovie } from "../hooks/useClickedMovie"
-import { useWatchedMovie } from "../hooks/useWatchedMovies"
+import { useClickedMovie } from "@/hooks/useClickedMovie"
+import { useWatchedMovie } from "@/hooks/useWatchedMovies"
 import localForage from "localforage"
-import { Movies } from "./Movies"
-import { Sumary } from "./Sumary"
-import { MovieDetails } from "./MovieDetails"
-import { WatchedMovies } from "./WatchedMovies"
+import { Movies } from "@/components/Movies"
+import { Sumary } from "@/components/Sumary"
+import { MovieDetails } from "@/components/MovieDetails"
+import { WatchedMovies } from "@/components/WatchedMovies"
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 

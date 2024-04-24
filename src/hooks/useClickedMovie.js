@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { apiKey } from "../utils/apiKey"
+import { apiKey } from "@/utils/apiKey"
 
 const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const [clickedMovie, setClickedMovie] = useState([])

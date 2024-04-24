@@ -1,4 +1,4 @@
-import { getMoviePoster } from "../utils/getMoviePoster";
+import { getMoviePoster } from "@/utils/getMoviePoster";
 
 const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
   <ul className="list list-watched">
