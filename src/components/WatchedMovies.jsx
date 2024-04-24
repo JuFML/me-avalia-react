@@ -1,7 +1,7 @@
 import { getMoviePoster } from "@/utils/getMoviePoster";
 
 const WatchedMovies = ({watchedMovies, onDeleteClick}) => (
-  <ul className="list list-watched">
+  <ul className="list">
     {watchedMovies.map(movie => (
       <li key={movie.imdbID}>
         <img src={getMoviePoster(movie.Poster)} alt="" />
