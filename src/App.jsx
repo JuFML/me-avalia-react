@@ -5,6 +5,7 @@ import { apiKey } from "@/utils/apiKey"
 
 const App = () => {
   const [movies, setMovies] = useState([])
+  const [fetchingMovies, setFetchingMovies] = useState(false)
 
   useEffect(() => {
     fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=lake`)
@@ -17,8 +18,8 @@ const App = () => {
 
   return (
     <>
-      <NavBar movies={movies} setMovies={setMovies}/>
-      <Main movies={movies}/>
+      <NavBar movies={movies} setMovies={setMovies} setFetchingMovies={setFetchingMovies}/>
+      <Main movies={movies} fetchingMovies={fetchingMovies} setFetchingMovies={setFetchingMovies}/>
     </>
   )
 };

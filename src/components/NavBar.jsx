@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import { apiKey } from "@/utils/apiKey"
 
-const NavBar = ({movies, setMovies}) => {
+const NavBar = ({movies, setMovies, setFetchingMovies}) => {
   const formRef = useRef(null)
 
   useEffect(() => {
@@ -12,6 +12,7 @@ const NavBar = ({movies, setMovies}) => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()    
+    setFetchingMovies(true)
     const {inputFilm} = e.target.elements
 
     if(inputFilm.value.length < 2) {
@@ -20,10 +21,9 @@ const NavBar = ({movies, setMovies}) => {
 
     fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${inputFilm.value}`)
       .then(data => data.json())
-      .then(resp => {
-        setMovies(resp.Search)
-      })
+      .then(resp => setMovies(resp.Search))
       .catch(error => alert(error.message))
+      .finally(() => setFetchingMovies(false))
   }
 
   return (

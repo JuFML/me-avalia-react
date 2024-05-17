@@ -6,10 +6,11 @@ import { Movies } from "@/components/Movies"
 import { Sumary } from "@/components/Sumary"
 import { MovieDetails } from "@/components/MovieDetails"
 import { WatchedMovies } from "@/components/WatchedMovies"
+import { Loader } from "./Loader"
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 
-const Main = ({movies}) => {
+const Main = ({movies, fetchingMovies, setFetchingMovies}) => {
   const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
   const {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating} = useClickedMovie(watchedMovies, setWatchedMovies)
 
@@ -23,15 +24,18 @@ const Main = ({movies}) => {
   }, [watchedMovies])
 
   useEffect(() => {
+    setFetchingMovies(true)
     localForage.getItem("watchedMovies")
-      .then(movies => movies && setWatchedMovies(movies))
+      .then(movies => {
+        movies && setWatchedMovies(movies)})
       .catch(error => alert(error.message))
+      .finally(() => setFetchingMovies(false))
   }, [])
 
   return (
     <main className="main">
         <ListBox>
-          <Movies movies={movies} onMovieClick={handleMovieClick}/>
+          {fetchingMovies ? <Loader /> : <Movies movies={movies} onMovieClick={handleMovieClick}/>}
         </ListBox>
 
         <ListBox>
