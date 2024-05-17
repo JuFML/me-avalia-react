@@ -10,7 +10,7 @@ import { Loader } from "./Loader"
 
 const ListBox = ({children}) => <div className="box">{children}</div>
 
-const Main = ({movies, fetchingMovies, setFetchingMovies}) => {
+const Main = ({movies, dispatch, fetchingMovies}) => {
   const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
   const {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating, fetchingMovieDetails} = useClickedMovie(watchedMovies, setWatchedMovies)
 
@@ -24,12 +24,12 @@ const Main = ({movies, fetchingMovies, setFetchingMovies}) => {
   }, [watchedMovies])
 
   useEffect(() => {
-    setFetchingMovies(true)
+    dispatch({type: "init_fetch"})
     localForage.getItem("watchedMovies")
       .then(movies => {
         movies && setWatchedMovies(movies)})
       .catch(error => alert(error.message))
-      .finally(() => setFetchingMovies(false))
+      .finally(() => dispatch({type: "ended_fetch"}))
   }, [])
 
   return (

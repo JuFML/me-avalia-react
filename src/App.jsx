@@ -1,25 +1,28 @@
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { NavBar } from "@/components/NavBar";
 import { Main } from "@/components/Main"
 import { apiKey } from "@/utils/apiKey"
 
+const reducer = (state, action) => ({
+  set_movies: {...state, movies: action.movies},
+  init_fetch: {...state, fetchingMovies: true},
+  ended_fetch: {...state, fetchingMovies: false},
+})[action.type || state]
+
 const App = () => {
-  const [movies, setMovies] = useState([])
-  const [fetchingMovies, setFetchingMovies] = useState(false)
+  const [state, dispatch] = useReducer(reducer, {movies: [], fetchingMovies: false})
 
   useEffect(() => {
     fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=lake`)
     .then(data => data.json())
-    .then(resp => {
-      setMovies(resp.Search)
-    })
+    .then(resp => dispatch({type: "set_movies", movies: resp.Search}))
     .catch(error => alert(error.message))
   }, [])
 
   return (
     <>
-      <NavBar movies={movies} setMovies={setMovies} setFetchingMovies={setFetchingMovies}/>
-      <Main movies={movies} fetchingMovies={fetchingMovies} setFetchingMovies={setFetchingMovies}/>
+      <NavBar movies={state?.movies} dispatch={dispatch} fetchingMovies={state?.fetchingMovies}/>
+      <Main movies={state?.movies} dispatch={dispatch} fetchingMovies={state?.fetchingMovies}/>
     </>
   )
 };
