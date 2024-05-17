@@ -5,6 +5,7 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const [clickedMovie, setClickedMovie] = useState([])
   const [rating, setRating] = useState("")
   const [tempRating, setTempRating] = useState("")
+  const [fetchingMovieDetails, setFetchingMovieDetails] = useState(false)
 
   const handleBackClick = () => {
     setClickedMovie([])
@@ -17,6 +18,7 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
     if (isFilmOnList || isTheSameFilm) {
       return
     }
+    setFetchingMovieDetails(true)
 
     const idMovieClicked = (movie.imdbID);
 
@@ -30,16 +32,19 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
         setClickedMovie(resp)
       })
       .catch(error => alert(error.message))
+      .finally(() => setFetchingMovieDetails(false))
   }
+
   const handleAddFilm = () => {
     setWatchedMovies(prev => [...prev, { ...clickedMovie, rate: rating }])
     setClickedMovie([])
     setRating("")
   }
+
   const handleMouseEnter = (rating) => { setTempRating(rating) }
   const handleMouseLeave = () => { setTempRating("") }
 
-  return { clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating }
+  return { clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating, fetchingMovieDetails }
 }
 
 export { useClickedMovie }
