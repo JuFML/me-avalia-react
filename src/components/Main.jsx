@@ -12,10 +12,10 @@ const ListBox = ({children}) => <div className="box">{children}</div>
 
 const Main = ({movies, dispatch, fetchingMovies}) => {
   const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
-  const {clickedMovie, setClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating, fetchingMovieDetails} = useClickedMovie(watchedMovies, setWatchedMovies)
+  const {clickedMovie, dispatchClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating, fetchingMovieDetails} = useClickedMovie(watchedMovies, setWatchedMovies)
 
   useEffect(() => {
-    setClickedMovie([])
+    dispatchClickedMovie({type: "set_clickedMovie", clickedMovie: []})
   }, [movies])
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const Main = ({movies, dispatch, fetchingMovies}) => {
           <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} tempRating={tempRating}/>
           }
 
-          {clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}
+          {!fetchingMovieDetails && clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}
         </ListBox>
       </main>
   )
