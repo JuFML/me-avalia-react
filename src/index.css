@@ -25,6 +25,10 @@
     background-color: var(--color-background-900);
     padding: 2.4rem;
     overflow: hidden;
+
+    @media (max-width: 911px) {
+      overflow: scroll;
+    }
   }
   
   .nav-bar {
