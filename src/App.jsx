@@ -13,7 +13,7 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, {movies: [], fetchingMovies: false})
 
   useEffect(() => {
-    fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=lake`)
+    fetch(`https://www.omdbapi.com/?i=tt3896198&apikey=${apiKey}`)
     .then(data => data.json())
     .then(resp => dispatch({type: "set_movies", movies: resp.Search}))
     .catch(error => alert(error.message))
