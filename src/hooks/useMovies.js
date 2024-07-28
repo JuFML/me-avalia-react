@@ -1,4 +1,4 @@
-import { useReducer } from "react"
+import { useReducer, useEffect, useState } from "react"
 import { apiKey } from "@/utils/apiKey"
 
 const reducer = (state, action) => ({
@@ -9,8 +9,21 @@ const reducer = (state, action) => ({
   ended_fetch: {...state, fetchingMovieDetails: false}
 })[action.type] || state
 
-const useClickedMovie = (watchedMovies, setWatchedMovies) => {
+const useMovies = () => {
   const [state, dispatch] = useReducer(reducer, {clickedMovie: [], rating: "", tempRating: "", fetchingMovieDetails: false})
+  const [watchedMovies, setWatchedMovies] = useState([])
+  const [minutesWatched, setMinutesWatched] = useState(0)
+
+  useEffect(() => {
+    setMinutesWatched(watchedMovies.reduce((acc, film) => {
+      return acc += Number(film.Runtime.replace(" min", ""))
+    }, 0))
+  }, [watchedMovies])
+
+  const handleDeleteClick = (e) => {
+    const filmIdToDelete = e.currentTarget.id
+    setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
+  }
 
   const handleBackClick = () => {
     dispatch({type: "set_clickedMovie", clickedMovie: []})
@@ -49,7 +62,7 @@ const useClickedMovie = (watchedMovies, setWatchedMovies) => {
   const handleMouseEnter = (rating) => { dispatch({type: "set_tempRating", tempRating: rating})}
   const handleMouseLeave = () => { dispatch({type: "set_tempRating", tempRating: ""})}
 
-  return { clickedMovie: state.clickedMovie, dispatchClickedMovie: dispatch, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating: state.rating, handleMouseEnter, handleMouseLeave, tempRating: state.tempRating, fetchingMovieDetails: state.fetchingMovieDetails }
+  return { watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick, clickedMovie: state.clickedMovie, dispatchClickedMovie: dispatch, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating: state.rating, handleMouseEnter, handleMouseLeave, tempRating: state.tempRating, fetchingMovieDetails: state.fetchingMovieDetails }
 }
 
-export { useClickedMovie }
+export { useMovies }

@@ -1,6 +1,5 @@
 import { useEffect } from "react"
-import { useClickedMovie } from "@/hooks/useClickedMovie"
-import { useWatchedMovie } from "@/hooks/useWatchedMovies"
+import { useMovies } from "@/hooks/useMovies"
 import localForage from "localforage"
 import { Movies } from "@/components/Movies"
 import { Sumary } from "@/components/Sumary"
@@ -11,9 +10,8 @@ import { Loader } from "./Loader"
 const ListBox = ({children}) => <div className="box">{children}</div>
 
 const Main = ({movies, dispatch, fetchingMovies}) => {
-  const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick} = useWatchedMovie()
-  const {clickedMovie, dispatchClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating, fetchingMovieDetails} = useClickedMovie(watchedMovies, setWatchedMovies)
-
+  const {watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick, clickedMovie, dispatchClickedMovie, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating, handleMouseEnter, handleMouseLeave, tempRating, fetchingMovieDetails} = useMovies()
+  
   useEffect(() => {
     dispatchClickedMovie({type: "set_clickedMovie", clickedMovie: []})
   }, [movies])
