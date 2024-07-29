@@ -14,7 +14,7 @@ const Main = ({movies, dispatch, fetchingMovies}) => {
   
   useEffect(() => {
     dispatchClickedMovie({type: "set_clickedMovie", clickedMovie: []})
-  }, [movies])
+  }, [dispatchClickedMovie])
 
   useEffect(() => {
     localForage.setItem("watchedMovies", watchedMovies)
@@ -28,7 +28,7 @@ const Main = ({movies, dispatch, fetchingMovies}) => {
         movies && setWatchedMovies(movies)})
       .catch(error => alert(error.message))
       .finally(() => dispatch({type: "ended_fetch"}))
-  }, [])
+  }, [dispatch, setWatchedMovies])
 
   return (
     <main className="main">
@@ -43,7 +43,7 @@ const Main = ({movies, dispatch, fetchingMovies}) => {
           <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} tempRating={tempRating}/>
           }
 
-          {!fetchingMovieDetails && clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick}/>}
+          {!fetchingMovieDetails && clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick} onClickedMovie={handleMovieClick}/>}
         </ListBox>
       </main>
   )

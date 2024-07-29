@@ -21,6 +21,7 @@ const useMovies = () => {
   }, [watchedMovies])
 
   const handleDeleteClick = (e) => {
+    e.stopPropagation()
     const filmIdToDelete = e.currentTarget.id
     setWatchedMovies(watchedMovies.filter(film => film.imdbID != filmIdToDelete))
   }
@@ -31,9 +32,11 @@ const useMovies = () => {
   }
   const handleRatingClick = (rating) => dispatch({type: "set_rating", rating})
   const handleMovieClick = (movie) => {
+    console.log(movie)
     const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
     const isTheSameFilm = movie.imdbID == state.clickedMovie.imdbID
-    if (isFilmOnList || isTheSameFilm) {
+    const isRated = movie.rate != undefined
+    if (!isRated && isFilmOnList || isTheSameFilm) {
       return
     }
     dispatch({type: "init_fetch"})
