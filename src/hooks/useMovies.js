@@ -10,7 +10,7 @@ const reducer = (state, action) => ({
 })[action.type] || state
 
 const useMovies = () => {
-  const [state, dispatch] = useReducer(reducer, {clickedMovie: [], rating: "", tempRating: "", fetchingMovieDetails: false})
+  const [state, dispatch] = useReducer(reducer, {clickedMovie: [], rating: 0, tempRating: 0, fetchingMovieDetails: false})
   const [watchedMovies, setWatchedMovies] = useState([])
   const [minutesWatched, setMinutesWatched] = useState(0)
 
@@ -28,7 +28,7 @@ const useMovies = () => {
 
   const handleBackClick = () => {
     dispatch({type: "set_clickedMovie", clickedMovie: []})
-    dispatch({type: "set_rating", rating: ""})
+    dispatch({type: "set_rating", rating: 0})
   }
   const handleRatingClick = (rating) => dispatch({type: "set_rating", rating})
   const handleMovieClick = (movie) => {
@@ -50,20 +50,29 @@ const useMovies = () => {
           dispatch({type: "set_clickedMovie", clickedMovie: { ...resp, Runtime: "0 min" }})
           return
         }
+        dispatch({type: "set_rating", rating: movie.rate || 0})
         dispatch({type: "set_clickedMovie", clickedMovie: resp})
       })
       .catch(error => alert(error.message))
       .finally(() => dispatch({type: "ended_fetch"}))
   }
 
-  const handleAddFilm = () => {
+  const handleAddFilm = () => {    
+    const isFilmOnList = watchedMovies.find(film => film.imdbID == state.clickedMovie.imdbID)
+    console.log("check", isFilmOnList)
+    if(isFilmOnList) {
+      setWatchedMovies(prev => prev.map(movie => state.clickedMovie.imdbID === movie.imdbID ? {...movie, rate: state.rating} : movie))
+      dispatch({type: "set_clickedMovie", clickedMovie: []})
+      dispatch({type: "set_rating", rating: 0})
+      return
+    }
     setWatchedMovies(prev => [...prev, { ...state.clickedMovie, rate: state.rating }])
     dispatch({type: "set_clickedMovie", clickedMovie: []})
-    dispatch({type: "set_rating", rating: ""})
+    dispatch({type: "set_rating", rating: 0})
   }
 
   const handleMouseEnter = (rating) => { dispatch({type: "set_tempRating", tempRating: rating})}
-  const handleMouseLeave = () => { dispatch({type: "set_tempRating", tempRating: ""})}
+  const handleMouseLeave = () => { dispatch({type: "set_tempRating", tempRating: 0})}
 
   return { watchedMovies, setWatchedMovies, minutesWatched, handleDeleteClick, clickedMovie: state.clickedMovie, dispatchClickedMovie: dispatch, handleBackClick, handleRatingClick, handleMovieClick, handleAddFilm, rating: state.rating, handleMouseEnter, handleMouseLeave, tempRating: state.tempRating, fetchingMovieDetails: state.fetchingMovieDetails }
 }

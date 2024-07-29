@@ -40,7 +40,7 @@ const Main = ({movies, dispatch, fetchingMovies}) => {
           {clickedMovie?.length === 0 && <Sumary watchedMovies={watchedMovies} minutesWatched={minutesWatched}/>}
 
           {fetchingMovieDetails ? <Loader/> :  clickedMovie?.length !== 0 &&
-          <MovieDetails onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} tempRating={tempRating}/>
+          <MovieDetails watchedMovies={watchedMovies} onButtonBackClick={handleBackClick} clickedMovie={clickedMovie} onClickRating={handleRatingClick} onClickAddFilm={handleAddFilm} rating={rating} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} tempRating={tempRating}/>
           }
 
           {!fetchingMovieDetails && clickedMovie?.length === 0 && <WatchedMovies watchedMovies={watchedMovies} onDeleteClick={handleDeleteClick} onClickedMovie={handleMovieClick}/>}
