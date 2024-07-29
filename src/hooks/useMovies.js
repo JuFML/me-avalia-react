@@ -30,9 +30,14 @@ const useMovies = () => {
     dispatch({type: "set_clickedMovie", clickedMovie: []})
     dispatch({type: "set_rating", rating: 0})
   }
-  const handleRatingClick = (rating) => dispatch({type: "set_rating", rating})
+  const handleRatingClick = (rating) => {
+    if(rating === state.rating) {
+      dispatch({type: "set_rating", rating: 0})
+      return
+    }
+    
+    dispatch({type: "set_rating", rating})}
   const handleMovieClick = (movie) => {
-    console.log(movie)
     const isFilmOnList = watchedMovies.find(film => film.imdbID == movie.imdbID)
     const isTheSameFilm = movie.imdbID == state.clickedMovie.imdbID
     const isRated = movie.rate != undefined
@@ -59,7 +64,6 @@ const useMovies = () => {
 
   const handleAddFilm = () => {    
     const isFilmOnList = watchedMovies.find(film => film.imdbID == state.clickedMovie.imdbID)
-    console.log("check", isFilmOnList)
     if(isFilmOnList) {
       setWatchedMovies(prev => prev.map(movie => state.clickedMovie.imdbID === movie.imdbID ? {...movie, rate: state.rating} : movie))
       dispatch({type: "set_clickedMovie", clickedMovie: []})
