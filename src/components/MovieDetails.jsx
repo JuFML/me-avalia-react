@@ -8,7 +8,7 @@ const MovieDetails = ({watchedMovies, onButtonBackClick, clickedMovie, onClickRa
   useEffect(() => {
     const isAlreadyOnList = watchedMovies.filter(movie => movie.imdbID === clickedMovie.imdbID)
     isAlreadyOnList.length > 0 && ratingChanged.rating != rating ? setRatingChanged(prev => ({...prev, status: true})) : setRatingChanged(prev => ({...prev, status: false}))
-  }, [rating, ratingChanged.rating, clickedMovie.imdbID, watchedMovies])
+  }, [rating, ratingChanged.rating, clickedMovie, watchedMovies])
 
   return (
   <div className="details">
