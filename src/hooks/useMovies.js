@@ -33,6 +33,7 @@ const useMovies = () => {
   const handleRatingClick = (rating) => {
     if(rating === state.rating) {
       dispatch({type: "set_rating", rating: 0})
+      dispatch({type: "set_tempRating", tempRating: 0})
       return
     }
     
